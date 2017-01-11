@@ -62,7 +62,7 @@ $(function() {
          it('menu element hidden by default', function() {
                 //initially the body contains a menu-hidden class
                 //using jquery to use .hasClass
-                $('body').hasClass('menu-hidden');
+                expect($('body').hasClass('menu-hidden')).toBe(true);
          });
 
          /* TODO: Write a test that ensures the menu changes
@@ -70,9 +70,15 @@ $(function() {
           * should have two expectations: does the menu display when
           * clicked and does it hide when clicked again.
           */
-          //it('menu visibility changes when the menu icon is clicked', function() {
+          it('menu visibility changes when the menu icon is clicked', function() {
             //clicking the menu-icon-link the menu-hidden class is toggled.
-          //});
+            if($('.menu-icon-link').click()) {
+                 expect($('body').hasClass('menu-hidden')).toBe(false);
+            }
+            if($('.menu-icon-link').click()) {
+                 expect($('body').hasClass('menu-hidden')).toBe(true);
+            }
+          });
     });
     /* TODO: Write a new test suite named "Initial Entries" */
 
