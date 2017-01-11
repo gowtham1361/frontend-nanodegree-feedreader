@@ -21,8 +21,8 @@ $(function() {
          * allFeeds in app.js to be an empty array and refresh the
          * page?
          */
-        it('are defined', function() {
-            expect(allFeeds).toBeDefined();
+       it('are defined', function() {
+           expect(allFeeds).toBeDefined();
             expect(allFeeds.length).not.toBe(0);
         });
 
@@ -31,29 +31,49 @@ $(function() {
          * in the allFeeds object and ensures it has a URL defined
          * and that the URL is not empty.
          */
-
+         it('url defined', function() {
+           allFeeds.forEach(function(url){
+            expect(url).toBeDefined();
+            expect(url).not.toBe('');
+           });
+         });
 
         /* TODO: Write a test that loops through each feed
          * in the allFeeds object and ensures it has a name defined
          * and that the name is not empty.
          */
+         it('name defined', function() {
+            allFeeds.forEach(function(name) {
+                expect(name).toBeDefined();
+                expect(name).not.toBe('');
+            });
+         });
     });
 
-
     /* TODO: Write a new test suite named "The menu" */
+    describe("The menu",function() {
+
 
         /* TODO: Write a test that ensures the menu element is
          * hidden by default. You'll have to analyze the HTML and
          * the CSS to determine how we're performing the
          * hiding/showing of the menu element.
          */
+         it('menu element hidden by default', function() {
+                //initially the body contains a menu-hidden class
+                //using jquery to use .hasClass
+                $('body').hasClass('menu-hidden');
+         });
 
          /* TODO: Write a test that ensures the menu changes
           * visibility when the menu icon is clicked. This test
           * should have two expectations: does the menu display when
           * clicked and does it hide when clicked again.
           */
-
+          //it('menu visibility changes when the menu icon is clicked', function() {
+            //clicking the menu-icon-link the menu-hidden class is toggled.
+          //});
+    });
     /* TODO: Write a new test suite named "Initial Entries" */
 
         /* TODO: Write a test that ensures when the loadFeed
