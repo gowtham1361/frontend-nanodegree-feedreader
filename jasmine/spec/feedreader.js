@@ -31,6 +31,7 @@ $(function() {
          * and that the URL is not empty.
          */
         it('url defined', function() {
+            //used forEach loop to iterate and access the url of allFeeds array
             allFeeds.forEach(function(url) {
                 expect(url).toBeDefined();
                 expect(url).not.toBe('');
@@ -42,6 +43,7 @@ $(function() {
          * and that the name is not empty.
          */
         it('name defined', function() {
+            //used forEach loop to iterate and access the name of allFeeds array
             allFeeds.forEach(function(name) {
                 expect(name).toBeDefined();
                 expect(name).not.toBe('');
@@ -56,9 +58,6 @@ $(function() {
          * the CSS to determine how we're performing the
          * hiding/showing of the menu element.
          */
-
-
-
         it('menu element hidden by default', function() {
             //initially the body contains a menu-hidden class
             //using jquery to use .hasClass
@@ -73,9 +72,12 @@ $(function() {
          */
         it('menu visibility changes when the menu icon is clicked', function() {
             //clicking the menu-icon-link the menu-hidden class is toggled.
+            //initially the menu is hidden or the .menu-hidden class is present
+            //triggering the click event on the .menu-icon-link  manually
+            //and checking whether the  menu-hidden class is toggled.
             $('.menu-icon-link').click()
             expect($('body').hasClass('menu-hidden')).toBe(false);
-
+            //again triggering click to check if the class menu-hidden is toggled
             $('.menu-icon-link').click()
             expect($('body').hasClass('menu-hidden')).toBe(true);
         });
@@ -90,49 +92,65 @@ $(function() {
     describe('Initial Entries', function() {
 
         /* TODO: Write a new test suite named "Initial Entries" */
-        //how to use beforeEach and what to do with the done(),
-        // where to include it,how to check the asynchronous loadFeed().
-        //the entries.length should not be zero
 
         beforeEach(function(done) {
-            //check whether the loadFeed function has completed the ajax request
-            //now call the done function
-            //execute the loadFeed function
-            loadFeed(1, done)
-            //done();
+            //execute the loadFeed function passing in index and callback done()
+            loadFeed(1, function() {
+                done();
+            });
         });
 
         it('atleast one entry is present in the feed container', function(done) {
-            var $Entry = $(".feed .entry");
+            //.feed container class is where the feeds are appended from app.js .
+            //It uses hadlebar.js for templating the feeds by entryTemplate with .tpl-entry class.
+            var $entry = $(".feed .entry-link .entry");
             // referred this link https://api.jquery.com/length/ for the below function.
-            expect($Entry.length).toBeGreaterThan(0);
-            expect($Entry.text()).not.toBe('');
+            expect($entry.length).toBeGreaterThan(0);
+            //verifying that there is some text present in the $entry
+            expect($entry.text()).not.toBe('');
             //loadFeed.entriesLen is undefined
-            done()
+            done();
         });
 
     });
 
     describe('New Feed Selection', function() {
-
+        //creating globally so that it can be accessed for comparison inside the it('feed content actually changes');
+        var firstFeedOne,
+            firstFeedTwo,
+            headerOne,
+            headerTwo;
+        //check whether headertitle changes
         beforeEach(function(done) {
-            loadFeed(1, done);
+            loadFeed(1, function() {
+                // Here in the anonymous callback we know that the feed has been loaded
+                //we know that the the feeds append to the .entry class of the .feed container by looking at the app.js and the html file
+                //and by inspecting in the console we find the first feeds h2 tags innerText (TITLE) by using the below selector.
+                //storing the firstfeed of 'CSS Tricks'in firstFeedOne variable
+                firstFeedOne = $('.entry-link .entry').find('h2')[0].innerText;
+                //storing the header-title of the feed in headerOne
+                headerOne = $('.header-title')[0].innerHTML;
+                // done();//works fine even without this being included why so?
+                // loading  next feed by chaining async requests as suggested by Karol mentor .
+                loadFeed(2, function() {
+                    //storing the firstfeed of 'HTML5 Rocks'in firstFeedTwo variable
+                    firstFeedTwo = $('.entry-link .entry').find('h2')[0].innerText;
+                    //storing the header-title of the feed in headerTwo
+                    headerTwo = $('.header-title')[0].innerHTML;
+                    done(); //notifying jasmine here that this async part has finished.
+                });
+            });
         });
-        /* TODO: Write a new test suite named "New Feed Selection"
-
-                /* TODO: Write a test that ensures when a new feed is loaded
-                 * by the loadFeed function that the content actually changes.
-                 * Remember, loadFeed() is asynchronous.
-                 */
-        it('feed content actually changes', function() {
-
+        // note this part is working fine even without the done being used for async support.
+        it('feed content actually changes', function() { // don't forget to tell jasmine to wait (asnyc support)
+            //check whether the header-title changes for each time the loadFeed fn runs with different id,
+            //if this changes then the feeds content change automatically.
+            expect(headerOne == headerTwo).not.toBe(true);
+            //comparing the two feeds of different links
+            expect(firstFeedOne == firstFeedTwo).toBe(false);
+            //done();
         });
-
-
-
 
     });
-
-
 
 }());
